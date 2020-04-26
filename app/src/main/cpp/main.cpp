@@ -4,6 +4,7 @@
 
 extern "C" {
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_android.h>
 }
 
 int main(int argc, char *argv[]) {
@@ -14,6 +15,9 @@ int main(int argc, char *argv[]) {
         __android_log_print(ANDROID_LOG_ERROR, TAG, "sdl init error %s", SDL_GetError());
         return -1;
     }
+    JNIEnv *jniEnv = Android_JNI_GetEnv();
+    __android_log_print(ANDROID_LOG_ERROR, TAG, "jni version %d", jniEnv->GetVersion());
+
     SDL_Window *sdlWindow = SDL_CreateWindow("HelloWorld", 0, 0, width, height, SDL_WINDOW_SHOWN);
     if (sdlWindow == NULL) {
         __android_log_print(ANDROID_LOG_ERROR, TAG, "create window error %s", SDL_GetError());
@@ -24,7 +28,6 @@ int main(int argc, char *argv[]) {
         __android_log_print(ANDROID_LOG_ERROR, TAG, "create renderer error %s", SDL_GetError());
         return -1;
     }
-    SDL_Event sdlEvent;
     SDL_Texture *sdlTexture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_ABGR8888,
                                                 SDL_TEXTUREACCESS_TARGET, width, height);
     if (sdlTexture == NULL) {
@@ -35,6 +38,7 @@ int main(int argc, char *argv[]) {
     sdlRect.w = 200;
     sdlRect.h = 200;
     int exit = 0;
+    SDL_Event sdlEvent;
     while (!exit) {
         if (SDL_PollEvent(&sdlEvent)) {
             if (sdlEvent.type == SDL_QUIT) {

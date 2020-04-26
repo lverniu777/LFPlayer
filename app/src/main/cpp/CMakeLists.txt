@@ -21,6 +21,16 @@ add_library( # Sets the name of the library.
         # Provides a relative path to your source file(s).
         main.cpp)
 add_library(
+        hidapi
+        SHARED
+        IMPORTED
+)
+set_target_properties(
+        hidapi
+        PROPERTIES IMPORTED_LOCATION
+        D:/AndroidStudio/sourcecode/LFPlayer/app/src/main/jniLibs/arm64-v8a/libhidapi.so
+)
+add_library(
         SDL2
         SHARED
         IMPORTED
@@ -30,6 +40,7 @@ set_target_properties(
         PROPERTIES IMPORTED_LOCATION
         D:/AndroidStudio/sourcecode/LFPlayer/app/src/main/jniLibs/arm64-v8a/libSDL2.so
 )
+
 
 add_library(
         SDL_image
@@ -60,6 +71,7 @@ find_library( # Sets the name of the path variable.
 
 target_link_libraries( # Specifies the target library.
         main
+        hidapi
         SDL2
         SDL_image
         # Links the target library to the log library
