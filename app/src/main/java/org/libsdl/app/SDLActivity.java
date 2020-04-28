@@ -1,5 +1,6 @@
 package org.libsdl.app;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -7,6 +8,7 @@ import java.util.Hashtable;
 import java.lang.reflect.Method;
 import java.lang.Math;
 
+import android.Manifest;
 import android.app.*;
 import android.content.*;
 import android.content.res.Configuration;
@@ -31,12 +33,16 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ApplicationInfo;
 
+import androidx.core.app.ActivityCompat;
+
+import com.example.lfplayer.FileUtils;
+
 /**
  * SDL Activity
  */
 public class SDLActivity extends Activity implements View.OnSystemUiVisibilityChangeListener {
     private static final String TAG = "SDL";
-
+    private static final int PERMISSION_REQUEST_CODE = 10086;
     public static boolean mIsResumedCalled, mHasFocus;
     public static final boolean mHasMultiWindow = (Build.VERSION.SDK_INT >= 24);
 
@@ -165,7 +171,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
      */
     protected String[] getArguments() {
         return new String[]{
-
+                FileUtils.INSTANCE.getROOT_DIR() + File.separator + "YUV.yuv"
         };
     }
 
@@ -194,7 +200,13 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         Log.v(TAG, "Model: " + Build.MODEL);
         Log.v(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
-
+        ActivityCompat.requestPermissions(this,
+                new String[]{
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                },
+                PERMISSION_REQUEST_CODE
+        );
         try {
             Thread.currentThread().setName("SDLActivity");
         } catch (Exception e) {
