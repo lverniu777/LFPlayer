@@ -4,8 +4,10 @@
 # Sets the minimum version of CMake required to build the native library.
 
 cmake_minimum_required(VERSION 3.4.1)
+set(libpath ${PROJECT_SOURCE_DIR}/jniLibs/${CMAKE_ANDROID_ARCH_ABI})
+set(includepath cpp/include)
 include_directories(
-        include
+       ${includepath}
 )
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
@@ -19,7 +21,7 @@ add_library( # Sets the name of the library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        main.cpp)
+        cpp/main.cpp)
 add_library(
         hidapi
         SHARED
@@ -28,7 +30,7 @@ add_library(
 set_target_properties(
         hidapi
         PROPERTIES IMPORTED_LOCATION
-        D:/AndroidStudio/sourcecode/LFPlayer/app/src/main/jniLibs/arm64-v8a/libhidapi.so
+        ${libpath}/libhidapi.so
 )
 add_library(
         SDL2
@@ -38,7 +40,7 @@ add_library(
 set_target_properties(
         SDL2
         PROPERTIES IMPORTED_LOCATION
-        D:/AndroidStudio/sourcecode/LFPlayer/app/src/main/jniLibs/arm64-v8a/libSDL2.so
+        ${libpath}/libSDL2.so
 )
 
 
@@ -50,7 +52,7 @@ add_library(
 set_target_properties(
         SDL_image
         PROPERTIES IMPORTED_LOCATION
-        D:/AndroidStudio/sourcecode/LFPlayer/app/src/main/jniLibs/arm64-v8a/libSDL2_image.so
+        ${libpath}/libSDL2_image.so
 )
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
