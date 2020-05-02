@@ -21,7 +21,7 @@ add_library( # Sets the name of the library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        cpp/main.cpp)
+        cpp/main.cpp cpp/yuvplayer.cpp)
 add_library(
         hidapi
         SHARED
