@@ -2,7 +2,7 @@
 // Created by 79852 on 2020/5/2.
 //
 
-#include <yuvplayer.h>
+#include <player/yuvplayer.h>
 #include <android/log.h>
 
 int thread_exit = 0;
