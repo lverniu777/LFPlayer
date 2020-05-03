@@ -4,8 +4,6 @@
 
 #ifndef LFPLAYER_YUVPLAYER_H
 #define LFPLAYER_YUVPLAYER_H
-
-#endif //LFPLAYER_YUVPLAYER_H
 #define BLOCK_SIZE 4096000
 extern "C" {
 #include <SDL2/SDL.h>
@@ -18,3 +16,5 @@ extern "C" {
 int refresh_video_timer(void *);
 
 void playYUV(char **);
+
+#endif //LFPLAYER_YUVPLAYER_H
