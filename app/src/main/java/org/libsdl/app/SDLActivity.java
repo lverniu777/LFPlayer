@@ -171,7 +171,8 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
      */
     protected String[] getArguments() {
         return new String[]{
-                FileUtils.INSTANCE.getROOT_DIR() + File.separator + "YUV.yuv"
+                FileUtils.INSTANCE.getROOT_DIR() + File.separator + "YUV.yuv",
+                FileUtils.INSTANCE.getROOT_DIR() + File.separator + "PCM.pcm"
         };
     }
 
