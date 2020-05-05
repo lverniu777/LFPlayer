@@ -14,7 +14,7 @@ import java.io.File
 object FileUtils {
     val ROOT_DIR: String
         get() {
-            val dirPath = Environment.getExternalStorageDirectory().absolutePath + File.separator + "FFPlayer"
+            val dirPath = Environment.getExternalStorageDirectory().absolutePath + File.separator + "LFPlayer"
             val dirFile = File(dirPath)
             if (!dirFile.exists()) {
                 dirFile.mkdirs()

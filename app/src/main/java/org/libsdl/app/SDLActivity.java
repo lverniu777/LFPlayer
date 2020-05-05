@@ -147,10 +147,16 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         return new String[]{
                 "hidapi",
                 "SDL2",
-                // "SDL2_image",
-                // "SDL2_mixer",
-                // "SDL2_net",
-                // "SDL2_ttf",
+                "avcodec",
+                "avdevice",
+                "avfilter",
+                "avformat",
+                "avutil",
+                "fdk-aac",
+                "SDL2_image",
+                "swresample",
+                "swscale",
+                "x264",
                 "main"
         };
     }
@@ -171,8 +177,8 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
      */
     protected String[] getArguments() {
         return new String[]{
-                FileUtils.INSTANCE.getROOT_DIR() + File.separator + "YUV.yuv",
-                FileUtils.INSTANCE.getROOT_DIR() + File.separator + "PCM.pcm"
+                FileUtils.INSTANCE.getROOT_DIR() + File.separator + "test.mp4",
+//                FileUtils.INSTANCE.getROOT_DIR() + File.separator + "PCM.pcm"
         };
     }
 
