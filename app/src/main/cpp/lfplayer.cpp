@@ -66,28 +66,16 @@ int audio_decode_frame(AVCodecContext *aCodecCtx, uint8_t *audio_buf, int buf_si
             audio_pkt_size -= len1;
             data_size = 0;
             if (got_frame) {
-                //fprintf(stderr, "channels:%d, nb_samples:%d, sample_fmt:%d \n", aCodecCtx->channels, frame.nb_samples, aCodecCtx->sample_fmt);
-                /*
-            data_size = av_samples_get_buffer_size(NULL,
-                                   aCodecCtx->channels,
-                                   frame.nb_samples,
-                                   aCodecCtx->sample_fmt,
-                                   1);
-                */
                 data_size = 2 * 2 * frame.nb_samples;
                 swr_convert(audioConvertCtx,
                             &audio_buf,
                             MAX_AUDIO_FRAME_SIZE * 3 / 2,
                             (const uint8_t **) frame.data,
                             frame.nb_samples);
-
-                //memcpy(audio_buf, frame.data[0], data_size);
             }
             if (data_size <= 0) {
-                /* No data yet, get more frames */
                 continue;
             }
-            /* We have data, return it and come back for more later */
             return data_size;
         }
         if (pkt.data)
