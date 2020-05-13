@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import androidx.annotation.RequiresApi;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import static android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK;
@@ -82,10 +83,12 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         }
         parameters.setFlashMode("off");
         parameters.setPreviewFormat(ImageFormat.NV21);
-        Camera.Size size = getFitSize(width, height, parameters.getSupportedPictureSizes());
-        parameters.setPictureSize(size.width, size.height);
-        size = getFitSize(width, height, parameters.getSupportedPreviewSizes());
-        parameters.setPreviewSize(1920, 1080);
+        final Camera.Size pictureSize = getFitSize(width, height, parameters.getSupportedPictureSizes());
+        Log.e(TAG, "picture size: " + pictureSize.width + " " + pictureSize.height);
+        parameters.setPictureSize(pictureSize.width, pictureSize.height);
+        final Camera.Size previewSize = getFitSize(width, height, parameters.getSupportedPreviewSizes());
+        Log.e(TAG, "preview size: " + previewSize.width + " " + previewSize.height);
+        parameters.setPreviewSize(previewSize.width, previewSize.height);
         mCamera.setParameters(parameters);
     }
 
@@ -95,12 +98,12 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
             height = width;
             width = t;
         }
-
-        for (Camera.Size size : sizes) {
-            if (1.0f * size.width / size.height == 1.0f * width / height) {
-                return size;
-            }
-        }
+        final float ratio = 1.0F * width / height;
+        Collections.sort(sizes, (o1, o2) -> {
+            final float diff1 = 1.0f * o1.width / o1.height - ratio;
+            final float diff2 = 1.0f * o2.width / o2.height - ratio;
+            return Float.compare(Math.abs(diff1), Math.abs(diff2));
+        });
         return sizes.get(0);
     }
 
