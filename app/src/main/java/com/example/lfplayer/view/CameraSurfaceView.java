@@ -48,7 +48,6 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     public void surfaceCreated(SurfaceHolder holder) {
         if (mCamera != null) {
             mCamera.stopPreview();
-            mCamera.release();
         }
         mCamera = Camera.open(CAMERA_FACING_BACK);
         try {
@@ -83,12 +82,17 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         }
         parameters.setFlashMode("off");
         parameters.setPreviewFormat(ImageFormat.NV21);
+        final List<String> focusModes = parameters.getSupportedFocusModes();
+        if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+        }
         final Camera.Size pictureSize = getFitSize(width, height, parameters.getSupportedPictureSizes());
         Log.e(TAG, "picture size: " + pictureSize.width + " " + pictureSize.height);
         parameters.setPictureSize(pictureSize.width, pictureSize.height);
         final Camera.Size previewSize = getFitSize(width, height, parameters.getSupportedPreviewSizes());
         Log.e(TAG, "preview size: " + previewSize.width + " " + previewSize.height);
         parameters.setPreviewSize(previewSize.width, previewSize.height);
+        parameters.setPreviewFormat(ImageFormat.YV12);
         mCamera.setParameters(parameters);
     }
 
@@ -127,15 +131,11 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        if (mCamera != null) {
-            mCamera.stopPreview();
-            mCamera.release();
-        }
-        mCamera = null;
+
     }
 
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
-        Log.e(TAG, "onPreviewFrame : " + data.length + " data: " + data);
+//        Log.e(TAG, "onPreviewFrame : " + data.length + " data: " + data);
     }
 }
