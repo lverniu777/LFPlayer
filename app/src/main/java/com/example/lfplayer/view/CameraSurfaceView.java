@@ -20,8 +20,9 @@ import java.util.List;
 import static android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK;
 
 public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Camera.PreviewCallback {
-    private Camera mCamera;
     private static final String TAG = CameraSurfaceView.class.getSimpleName();
+    private Camera mCamera;
+    private FrameListener mFrameListener;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public CameraSurfaceView(Context context) {
@@ -66,20 +67,22 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
             return;
         }
         final int angle = windowManager.getDefaultDisplay().getRotation();
+        int rotation = 0;
         switch (angle) {
             case Surface.ROTATION_0:
-                mCamera.setDisplayOrientation(90);
+                rotation = 90;
                 break;
             case Surface.ROTATION_90:
-                mCamera.setDisplayOrientation(0);
+                rotation = 0;
                 break;
             case Surface.ROTATION_180:
-                mCamera.setDisplayOrientation(270);
+                rotation = 270;
                 break;
             case Surface.ROTATION_270:
-                mCamera.setDisplayOrientation(180);
+                rotation = 180;
                 break;
         }
+        mCamera.setDisplayOrientation(rotation);
         parameters.setFlashMode("off");
         parameters.setPreviewFormat(ImageFormat.NV21);
         final List<String> focusModes = parameters.getSupportedFocusModes();
@@ -92,7 +95,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         final Camera.Size previewSize = getFitSize(width, height, parameters.getSupportedPreviewSizes());
         Log.e(TAG, "preview size: " + previewSize.width + " " + previewSize.height);
         parameters.setPreviewSize(previewSize.width, previewSize.height);
-        parameters.setPreviewFormat(ImageFormat.YV12);
+        parameters.setPreviewFormat(ImageFormat.NV21);
         mCamera.setParameters(parameters);
     }
 
@@ -137,5 +140,18 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
 //        Log.e(TAG, "onPreviewFrame : " + data.length + " data: " + data);
+        if (mFrameListener != null) {
+            final Camera.Size previewSize = camera.getParameters().getPreviewSize();
+            mFrameListener.onReceivedFrame(data, previewSize.width, previewSize.height);
+        }
+    }
+
+
+    public void setFrameListener(FrameListener listener) {
+        this.mFrameListener = listener;
+    }
+
+    public interface FrameListener {
+        void onReceivedFrame(byte[] data, int width, int height);
     }
 }

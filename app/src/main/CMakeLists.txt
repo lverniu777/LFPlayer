@@ -6,9 +6,9 @@ include_directories(
         ${includepath}
 )
 add_library(
-        main
+        lfplayer
         SHARED
-        cpp/lfplayer.cpp cpp/main.cpp cpp/yuvplayer.cpp cpp/pcmplayer.cpp)
+        cpp/lfplayer.cpp cpp/main.cpp cpp/yuvplayer.cpp cpp/pcmplayer.cpp cpp/encodeH264.cpp)
 add_library(
         hidapi
         SHARED
@@ -144,7 +144,7 @@ set_target_properties(
         ${libpath}/libfdk-aac.so
 )
 target_link_libraries(
-        main
+        lfplayer
         hidapi
         SDL2
         SDL_image

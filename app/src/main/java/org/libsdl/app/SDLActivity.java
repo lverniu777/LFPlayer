@@ -157,7 +157,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
                 "swresample",
                 "swscale",
                 "x264",
-                "main"
+                "lfplayer"
         };
     }
 

@@ -5,10 +5,8 @@
 #ifndef LFPLAYER_LFPLAYER_H
 #define LFPLAYER_LFPLAYER_H
 
-#include <android/log.h>
+#include <player/lfplayerutils.h>
 
-#define TAG "LFPlayer"
-#define LOG(...) __android_log_print(ANDROID_LOG_ERROR,TAG,__VA_ARGS__);
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libswscale/swscale.h>
