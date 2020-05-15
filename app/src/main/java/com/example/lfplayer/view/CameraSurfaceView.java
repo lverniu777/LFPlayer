@@ -84,6 +84,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         }
         mCamera.setDisplayOrientation(rotation);
         parameters.setFlashMode("off");
+        parameters.setJpegQuality(100);
         parameters.setPreviewFormat(ImageFormat.NV21);
         final List<String> focusModes = parameters.getSupportedFocusModes();
         if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
@@ -149,6 +150,12 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
     public void setFrameListener(FrameListener listener) {
         this.mFrameListener = listener;
+    }
+
+    public void onPause() {
+        if (mCamera != null) {
+            mCamera.stopPreview();
+        }
     }
 
     public interface FrameListener {

@@ -19,7 +19,7 @@ public class H264Encoder implements IEncoder {
 
     @Override
     public void encode(byte[] frame, int width, int height) {
-        Log.e(TAG, this + " encode: " + frame.length + " width: " + width + " height: " + height);
+//        Log.e(TAG, this + " encode: " + frame.length + " width: " + width + " height: " + height);
         encodeH264(frame, width, height, mSavePath);
     }
 

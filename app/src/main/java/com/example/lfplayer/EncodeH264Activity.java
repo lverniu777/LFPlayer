@@ -24,4 +24,11 @@ public class EncodeH264Activity extends AppCompatActivity {
         mCameraSurfaceView.setFrameListener(new H264Encoder()::encode);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(mCameraSurfaceView != null) {
+            mCameraSurfaceView.onPause();
+        }
+    }
 }
