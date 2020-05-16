@@ -8,13 +8,20 @@ import java.io.File;
 
 public class H264Encoder implements IEncoder {
     private static final String TAG = H264Encoder.class.getSimpleName();
-    private final String mSavePath = FileUtils.INSTANCE.getROOT_DIR() + File.separator + System.currentTimeMillis() + ".h264";
 
     static {
         System.loadLibrary("avcodec");
         System.loadLibrary("x264");
         System.loadLibrary("lfplayer");
     }
+
+    private final String mSavePath = FileUtils.INSTANCE.getROOT_DIR() + File.separator + System.currentTimeMillis() + ".yuv";
+
+    public H264Encoder() {
+        nativeInit(mSavePath);
+    }
+
+    private native void nativeInit(String mSavePath);
 
 
     @Override
