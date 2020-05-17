@@ -149,6 +149,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         }
     }
 
+    //相机预览数据需要进行方向旋转
     private byte[] rotateYUV420Degree90(byte[] data, int imageWidth, int imageHeight) {
 
         byte[] yuv = new byte[imageWidth * imageHeight * 3 / 2];
