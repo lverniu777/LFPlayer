@@ -19,7 +19,10 @@ import java.util.List;
 
 import static android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK;
 
-public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Camera.PreviewCallback {
+/**
+ * 使用Camera1进行视频采集
+ */
+public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Camera.PreviewCallback, ICameraView {
     private static final String TAG = CameraSurfaceView.class.getSimpleName();
     private Camera mCamera;
     private FrameListener mFrameListener;
