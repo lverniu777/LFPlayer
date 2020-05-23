@@ -143,6 +143,17 @@ set_target_properties(
         PROPERTIES IMPORTED_LOCATION
         ${libpath}/libfdk-aac.so
 )
+
+add_library(
+        rtmp
+        SHARED
+        IMPORTED
+)
+set_target_properties(
+        rtmp
+        PROPERTIES IMPORTED_LOCATION
+        ${libpath}/librtmp.so
+)
 target_link_libraries(
         lfplayer
         hidapi
@@ -157,4 +168,5 @@ target_link_libraries(
         swscale
         x264
         fdkaac
+        rtmp
         ${log-lib})

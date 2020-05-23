@@ -6,6 +6,7 @@
 
 extern "C" {
 #include <libavcodec/avcodec.h>
+#include <rtmp/rtmp.h>
 }
 static int base = 0;
 static FILE *openFile = NULL;
