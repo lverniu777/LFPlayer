@@ -3,7 +3,6 @@ package org.libsdl.app;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.lang.reflect.Method;
 import java.lang.Math;
@@ -35,7 +34,7 @@ import android.content.pm.ApplicationInfo;
 
 import androidx.core.app.ActivityCompat;
 
-import com.example.lfplayer.FileUtils;
+import com.example.lfplayer.utils.FileUtils;
 
 /**
  * SDL Activity

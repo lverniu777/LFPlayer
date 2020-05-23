@@ -1,4 +1,4 @@
-package com.example.lfplayer
+package com.example.lfplayer.utils
 
 import android.content.ContentUris
 import android.content.Context

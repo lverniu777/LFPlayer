@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.lfplayer.encoder.H264Encoder;
-import com.example.lfplayer.encoder.IEncoder;
+import com.example.lfplayer.encoder.IVideoEncoder;
 import com.example.lfplayer.view.CameraSurfaceView;
 
 import butterknife.BindView;
@@ -16,7 +16,7 @@ public class EncodeH264Activity extends AppCompatActivity {
     @BindView(R.id.camera_surface_view)
     CameraSurfaceView mCameraSurfaceView;
 
-    private IEncoder mEncoder;
+    private IVideoEncoder mEncoder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

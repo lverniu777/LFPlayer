@@ -3,11 +3,11 @@ package com.example.lfplayer.encoder;
 import android.os.Handler;
 import android.os.HandlerThread;
 
-import com.example.lfplayer.FileUtils;
+import com.example.lfplayer.utils.FileUtils;
 
 import java.io.File;
 
-public class H264Encoder implements IEncoder {
+public class H264Encoder implements IVideoEncoder {
     private static final String TAG = H264Encoder.class.getSimpleName();
     private final String mSavePath = FileUtils.INSTANCE.getROOT_DIR() + File.separator + System.currentTimeMillis() + ".h264";
     private volatile HandlerThread mHandlerThread;

@@ -21,6 +21,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 10086;
     @BindView(R.id.encode_preview_h264)
     TextView mEncodeH264;
+
+    @BindView(R.id.audio_record)
+    TextView mAudioRecord;
+
     @BindView(R.id.sdl_player)
     TextView mSDLPlayer;
 
@@ -40,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    @OnClick({R.id.encode_preview_h264, R.id.sdl_player})
+    @OnClick({R.id.encode_preview_h264, R.id.sdl_player, R.id.audio_record})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.encode_preview_h264:
@@ -48,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.sdl_player:
                 startActivity(new Intent(this, SDLActivity.class));
+                break;
+            case R.id.audio_record:
+                startActivity(new Intent(this, AudioRecordActivity.class));
                 break;
         }
     }
