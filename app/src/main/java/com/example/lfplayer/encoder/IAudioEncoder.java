@@ -5,4 +5,8 @@ package com.example.lfplayer.encoder;
  */
 public interface IAudioEncoder {
 
+
+    void encode(byte[] pcm, int readSize);
+
+    void destroy();
 }

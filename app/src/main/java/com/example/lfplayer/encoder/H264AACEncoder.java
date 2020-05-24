@@ -7,9 +7,9 @@ import com.example.lfplayer.utils.FileUtils;
 
 import java.io.File;
 
-public class H264Encoder implements IVideoEncoder {
-    private static final String TAG = H264Encoder.class.getSimpleName();
-    private final String mSavePath = FileUtils.INSTANCE.getROOT_DIR() + File.separator + System.currentTimeMillis() + ".h264";
+public class H264AACEncoder extends AbstractEncoder {
+    private static final String TAG = H264AACEncoder.class.getSimpleName();
+    private final String mSavePath;
     private volatile HandlerThread mHandlerThread;
     private volatile Handler mHandler;
     private final Object mEncodeLock = new Object();
@@ -22,8 +22,8 @@ public class H264Encoder implements IVideoEncoder {
         System.loadLibrary("lfplayer");
     }
 
-    public H264Encoder() {
-        nativeInit(mSavePath);
+    public H264AACEncoder(String savePath) {
+        mSavePath = savePath;
         mHandlerThread = new HandlerThread("encode h264 thread");
         mHandlerThread.start();
         mHandler = new Handler(mHandlerThread.getLooper());
@@ -98,8 +98,22 @@ public class H264Encoder implements IVideoEncoder {
         return nv21;
     }
 
+    @Override
+    public void encode(byte[] pcm, int readSize) {
+        nativeEncodeAAC(pcm, readSize,mSavePath);
+    }
+
+    @Override
+    public void destroy() {
+        nativeDestroy();
+    }
+
+    private native void nativeDestroy();
+
     private native void nativeFlush();
 
     private native void encodeH264(byte[] frame, int width, int height, String filePath);
+
+    private native void nativeEncodeAAC(byte[] pcm, int readSize, String mSavePath);
 
 }

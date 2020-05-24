@@ -6,8 +6,13 @@ import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.HandlerThread;
 
+import com.example.lfplayer.encoder.H264AACEncoder;
+import com.example.lfplayer.encoder.IAudioEncoder;
+import com.example.lfplayer.utils.FileUtils;
 import com.example.lfplayer.utils.Utils;
 import com.example.lfplayer.utils.WorkHandler;
+
+import java.io.File;
 
 
 public class AudioRecordHelper implements IAudioRecord {
@@ -18,8 +23,11 @@ public class AudioRecordHelper implements IAudioRecord {
     private volatile byte[] mBuffer;
     private WorkHandler mWorkHandler;
     private AudioRecord mAudioRecorder;
+    private IAudioEncoder mAudioEncoder;
+
 
     public void init() {
+        mAudioEncoder = new H264AACEncoder(FileUtils.INSTANCE.getROOT_DIR() + File.separator + System.currentTimeMillis() + ".pcm");
         mWorkHandler = new WorkHandler();
         mWorkHandler.init("audio record thread");
         final int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL, AUDIO_FORMAT);
@@ -59,6 +67,7 @@ public class AudioRecordHelper implements IAudioRecord {
                     return;
                 }
                 final int readSize = mAudioRecorder.read(mBuffer, 0, mBuffer.length);
+                mAudioEncoder.encode(mBuffer, readSize);
                 Utils.INSTANCE.log("audio record read size: " + readSize);
                 mWorkHandler.execute(this);
             }
@@ -81,6 +90,7 @@ public class AudioRecordHelper implements IAudioRecord {
         }
         mWorkHandler.destroy();
         mAudioRecorder.release();
+        mAudioEncoder.destroy();
         mAudioRecorder = null;
     }
 

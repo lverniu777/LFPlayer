@@ -40,17 +40,17 @@ static void encode(AVCodecContext *enc_ctx, AVFrame *frame, AVPacket *pkt,
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_example_lfplayer_encoder_H264Encoder_nativeInit(JNIEnv *env, jobject thiz,
-                                                         jstring m_save_path) {
+Java_com_example_lfplayer_encoder_H264AACEncoder_nativeInit(JNIEnv *env, jobject thiz,
+                                                            jstring m_save_path) {
     LOG("nativeInit");
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_example_lfplayer_encoder_H264Encoder_encodeH264(JNIEnv *env, jobject thiz,
-                                                         jbyteArray frameArray, jint width,
-                                                         jint height,
-                                                         jstring file_path) {
+Java_com_example_lfplayer_encoder_H264AACEncoder_encodeH264(JNIEnv *env, jobject thiz,
+                                                            jbyteArray frameArray, jint width,
+                                                            jint height,
+                                                            jstring file_path) {
     if (!avCodecContext) {
         const char *filePath = env->GetStringUTFChars(file_path, NULL);
         base = 0;
@@ -101,7 +101,7 @@ Java_com_example_lfplayer_encoder_H264Encoder_encodeH264(JNIEnv *env, jobject th
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_example_lfplayer_encoder_H264Encoder_nativeFlush(JNIEnv *env, jobject thiz) {
+Java_com_example_lfplayer_encoder_H264AACEncoder_nativeFlush(JNIEnv *env, jobject thiz) {
     if (avPacket && avCodecContext && openFile) {
         encode(avCodecContext, NULL, avPacket, openFile);
         fclose(openFile);
@@ -130,3 +130,26 @@ Java_com_example_lfplayer_encoder_H264Encoder_nativeFlush(JNIEnv *env, jobject t
 
 
 
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_lfplayer_encoder_H264AACEncoder_nativeEncodeAAC(JNIEnv *env, jobject thiz,
+                                                                 jbyteArray pcm, jint read_size,
+                                                                 jstring m_save_path) {
+    if (!openFile) {
+        const char *fileName = env->GetStringUTFChars(m_save_path, NULL);
+        openFile = fopen(fileName, "wb+");
+    }
+    jbyte *pcmBytes = env->GetByteArrayElements(pcm, NULL);
+    const int writeSize = fwrite(pcmBytes, 1, env->GetArrayLength(pcm), openFile);
+    LOG("write auido sieze: %d",writeSize);
+    env->ReleaseByteArrayElements(pcm, pcmBytes, JNI_ABORT);
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_lfplayer_encoder_H264AACEncoder_nativeDestroy(JNIEnv *env, jobject thiz) {
+    if (openFile) {
+        fflush(openFile);
+        fclose(openFile);
+        openFile = NULL;
+    }
+}
