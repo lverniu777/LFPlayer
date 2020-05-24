@@ -47,10 +47,17 @@ public class AudioRecordHelper implements IAudioRecord {
         if (mAudioRecorder == null) {
             throw new IllegalStateException("not init");
         }
+        if (mAudioRecorder.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING) {
+            return;
+        }
         mAudioRecorder.startRecording();
+        mWorkHandler.start();
         mWorkHandler.execute(new Runnable() {
             @Override
             public void run() {
+                if (mAudioRecorder.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING) {
+                    return;
+                }
                 final int readSize = mAudioRecorder.read(mBuffer, 0, mBuffer.length);
                 Utils.INSTANCE.log("audio record read size: " + readSize);
                 mWorkHandler.execute(this);
@@ -63,6 +70,7 @@ public class AudioRecordHelper implements IAudioRecord {
         if (mAudioRecorder == null) {
             return;
         }
+        mAudioRecorder.stop();
         mWorkHandler.stop();
     }
 

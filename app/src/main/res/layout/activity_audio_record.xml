@@ -6,4 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".AudioRecordActivity">
 
+    <TextView
+        android:id="@+id/audio_record_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始录音"
+        app:layout_constraintBottom_toTopOf="@id/audio_record_end"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/audio_record_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="停止录音"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/audio_record_start" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
