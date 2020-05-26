@@ -3,8 +3,6 @@ package com.example.lfplayer.record;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
-import android.os.Handler;
-import android.os.HandlerThread;
 
 import com.example.lfplayer.encoder.H264AACEncoder;
 import com.example.lfplayer.encoder.IAudioEncoder;
@@ -22,17 +20,17 @@ public class AudioRecordHelper implements IAudioRecord {
     private static final int AUDIO_SOURCE = MediaRecorder.AudioSource.MIC;
     private volatile byte[] mBuffer;
     private WorkHandler mWorkHandler;
-    private AudioRecord mAudioRecorder;
+    private AudioRecord mAudioRecord;
     private IAudioEncoder mAudioEncoder;
 
 
     public void init() {
-        mAudioEncoder = new H264AACEncoder(FileUtils.INSTANCE.getROOT_DIR() + File.separator + System.currentTimeMillis() + ".pcm");
+        mAudioEncoder = new H264AACEncoder(FileUtils.INSTANCE.getROOT_DIR() + File.separator + System.currentTimeMillis() + ".aac");
         mWorkHandler = new WorkHandler();
         mWorkHandler.init("audio record thread");
         final int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL, AUDIO_FORMAT);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            mAudioRecorder = new AudioRecord.Builder()
+            mAudioRecord = new AudioRecord.Builder()
                     .setAudioSource(AUDIO_SOURCE)
                     .setAudioFormat(
                             new AudioFormat.Builder()
@@ -44,7 +42,7 @@ public class AudioRecordHelper implements IAudioRecord {
                     .setBufferSizeInBytes(bufferSize)
                     .build();
         } else {
-            mAudioRecorder = new AudioRecord(AUDIO_SOURCE, SAMPLE_RATE, CHANNEL, AUDIO_FORMAT, bufferSize);
+            mAudioRecord = new AudioRecord(AUDIO_SOURCE, SAMPLE_RATE, CHANNEL, AUDIO_FORMAT, bufferSize);
         }
         mBuffer = new byte[bufferSize];
     }
@@ -52,21 +50,21 @@ public class AudioRecordHelper implements IAudioRecord {
 
     @Override
     public void startRecord() {
-        if (mAudioRecorder == null) {
+        if (mAudioRecord == null) {
             throw new IllegalStateException("not init");
         }
-        if (mAudioRecorder.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING) {
+        if (mAudioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING) {
             return;
         }
-        mAudioRecorder.startRecording();
+        mAudioRecord.startRecording();
         mWorkHandler.start();
         mWorkHandler.execute(new Runnable() {
             @Override
             public void run() {
-                if (mAudioRecorder.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING) {
+                if (mAudioRecord.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING) {
                     return;
                 }
-                final int readSize = mAudioRecorder.read(mBuffer, 0, mBuffer.length);
+                final int readSize = mAudioRecord.read(mBuffer, 0, mBuffer.length);
                 mAudioEncoder.encode(mBuffer, readSize);
                 Utils.INSTANCE.log("audio record read size: " + readSize);
                 mWorkHandler.execute(this);
@@ -76,22 +74,23 @@ public class AudioRecordHelper implements IAudioRecord {
 
     @Override
     public void stopRecord() {
-        if (mAudioRecorder == null) {
+        if (mAudioRecord == null) {
             return;
         }
-        mAudioRecorder.stop();
+        mAudioRecord.stop();
         mWorkHandler.stop();
     }
 
     @Override
     public void destroy() {
-        if (mAudioRecorder == null) {
+        if (mAudioRecord == null) {
             return;
         }
         mWorkHandler.destroy();
-        mAudioRecorder.release();
+        mAudioRecord.release();
         mAudioEncoder.destroy();
-        mAudioRecorder = null;
+        mAudioRecord = null;
+        mBuffer = null;
     }
 
 

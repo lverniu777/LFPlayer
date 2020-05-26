@@ -6,6 +6,7 @@
 
 extern "C" {
 #include <libavcodec/avcodec.h>
+#include <libswresample/swresample.h>
 #include <rtmp/rtmp.h>
 }
 static int base = 0;
@@ -138,17 +139,66 @@ Java_com_example_lfplayer_encoder_H264AACEncoder_nativeEncodeAAC(JNIEnv *env, jo
     if (!openFile) {
         const char *fileName = env->GetStringUTFChars(m_save_path, NULL);
         openFile = fopen(fileName, "wb+");
+        AVCodec *audioCodec = avcodec_find_encoder_by_name("libfdk_aac");
+        if (!audioCodec) {
+            LOG("not found audio codec");
+            return;
+        }
+        avCodecContext = avcodec_alloc_context3(audioCodec);
+        if (!avCodecContext) {
+            LOG("avcodec_alloc_context3 failed");
+            return;
+        }
+        avCodecContext->profile = FF_PROFILE_AAC_LOW;
+        avCodecContext->sample_rate = 44100;
+        avCodecContext->channels = 2;
+        avCodecContext->channel_layout = AV_CH_LAYOUT_STEREO;
+        avCodecContext->sample_fmt = AV_SAMPLE_FMT_S16;
+        int ret = avcodec_open2(avCodecContext, audioCodec, NULL);
+        if (ret) {
+            LOG("avcodec_open2 failed %s", av_err2str(ret));
+            return;
+        }
+        avFrame = av_frame_alloc();
+        if (!avFrame) {
+            LOG("av_frame_alloc failed");
+            return;
+        }
+        avFrame->sample_rate = avCodecContext->sample_rate;
+        avFrame->format = avCodecContext->sample_fmt;
+        avFrame->channels = avCodecContext->channels;
+        avFrame->channel_layout = avCodecContext->channel_layout;
+        avFrame->nb_samples = avCodecContext->frame_size;
+        ret = av_frame_get_buffer(avFrame, 0);
+        if (ret) {
+            LOG("av_frame_get_buffer failed %s", av_err2str(ret));
+            return;
+        }
+        av_frame_make_writable(avFrame);
+        avPacket = av_packet_alloc();
+        av_init_packet(avPacket);
     }
     jbyte *pcmBytes = env->GetByteArrayElements(pcm, NULL);
-    const int writeSize = fwrite(pcmBytes, 1, env->GetArrayLength(pcm), openFile);
-    LOG("write auido sieze: %d",writeSize);
+    const int length = env->GetArrayLength(pcm);
+
+    int index = 0;
+    while (index < length) {
+        for (int i = 0; i < avFrame->linesize[0] && i < length && index < length; i++) {
+            avFrame->data[0][i] = static_cast<uint8_t>(pcmBytes[index++]);
+        }
+        encode(avCodecContext, avFrame, avPacket, openFile);
+    }
+    LOG("one time encode completed index: %d", index);
     env->ReleaseByteArrayElements(pcm, pcmBytes, JNI_ABORT);
 }
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_lfplayer_encoder_H264AACEncoder_nativeDestroy(JNIEnv *env, jobject thiz) {
     if (openFile) {
-        fflush(openFile);
+        encode(avCodecContext, NULL, avPacket, openFile);
+        av_packet_free(&avPacket);
+        av_frame_free(&avFrame);
+        avcodec_free_context(&avCodecContext);
         fclose(openFile);
         openFile = NULL;
     }
