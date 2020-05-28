@@ -18,6 +18,9 @@ public class AudioRecordHelper implements IAudioRecord {
     private static final int CHANNEL = AudioFormat.CHANNEL_IN_STEREO;
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
     private static final int AUDIO_SOURCE = MediaRecorder.AudioSource.MIC;
+    private static final int BITS_DEPTH = 16;
+    private static final int CHANNEL_COUNT = 2;
+    private static final int SAMPLES_PER_CHANEL = 1024;
     private volatile byte[] mBuffer;
     private WorkHandler mWorkHandler;
     private AudioRecord mAudioRecord;
@@ -28,7 +31,14 @@ public class AudioRecordHelper implements IAudioRecord {
         mAudioEncoder = new H264AACEncoder(FileUtils.INSTANCE.getROOT_DIR() + File.separator + System.currentTimeMillis() + ".aac");
         mWorkHandler = new WorkHandler();
         mWorkHandler.init("audio record thread");
-        final int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL, AUDIO_FORMAT);
+        final int minBufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL, AUDIO_FORMAT);
+        final int samplesInBufferSize = minBufferSize / (BITS_DEPTH / 8) / CHANNEL_COUNT;
+        final int bufferSize;
+        if (samplesInBufferSize < SAMPLES_PER_CHANEL) {
+            bufferSize = SAMPLES_PER_CHANEL;
+        } else {
+            bufferSize = (samplesInBufferSize / SAMPLES_PER_CHANEL + 1) * SAMPLES_PER_CHANEL * (BITS_DEPTH / 8) * CHANNEL_COUNT;
+        }
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             mAudioRecord = new AudioRecord.Builder()
                     .setAudioSource(AUDIO_SOURCE)

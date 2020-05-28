@@ -150,6 +150,7 @@ Java_com_example_lfplayer_encoder_H264AACEncoder_nativeEncodeAAC(JNIEnv *env, jo
             return;
         }
         avCodecContext->profile = FF_PROFILE_AAC_LOW;
+        avCodecContext->bit_rate = 128000;
         avCodecContext->sample_rate = 44100;
         avCodecContext->channels = 2;
         avCodecContext->channel_layout = AV_CH_LAYOUT_STEREO;
@@ -180,7 +181,6 @@ Java_com_example_lfplayer_encoder_H264AACEncoder_nativeEncodeAAC(JNIEnv *env, jo
     }
     jbyte *pcmBytes = env->GetByteArrayElements(pcm, NULL);
     const int length = env->GetArrayLength(pcm);
-
     int index = 0;
     while (index < length) {
         for (int i = 0; i < avFrame->linesize[0] && i < length && index < length; i++) {
@@ -188,7 +188,6 @@ Java_com_example_lfplayer_encoder_H264AACEncoder_nativeEncodeAAC(JNIEnv *env, jo
         }
         encode(avCodecContext, avFrame, avPacket, openFile);
     }
-    LOG("one time encode completed index: %d", index);
     env->ReleaseByteArrayElements(pcm, pcmBytes, JNI_ABORT);
 }
 extern "C"
