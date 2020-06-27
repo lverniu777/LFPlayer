@@ -19,14 +19,6 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 10086;
-    @BindView(R.id.encode_preview_h264)
-    TextView mEncodeH264;
-
-    @BindView(R.id.audio_record)
-    TextView mAudioRecord;
-
-    @BindView(R.id.sdl_player)
-    TextView mSDLPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
