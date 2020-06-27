@@ -5,6 +5,12 @@ set(includepath cpp/include)
 include_directories(
         ${includepath}
 )
+find_library(
+        log-lib
+        log)
+find_library(
+        android-lib
+        android)
 add_library(
         lfplayer
         SHARED
@@ -41,9 +47,7 @@ set_target_properties(
         PROPERTIES IMPORTED_LOCATION
         ${libpath}/libSDL2_image.so
 )
-find_library(
-        log-lib
-        log)
+
 add_library(
         avcodec
         SHARED
@@ -169,4 +173,6 @@ target_link_libraries(
         x264
         fdkaac
         rtmp
-        ${log-lib})
+        ${log-lib}
+        ${android-lib}
+)
