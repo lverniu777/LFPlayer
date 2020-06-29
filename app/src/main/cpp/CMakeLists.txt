@@ -5,9 +5,14 @@ set(includepath ./include)
 include_directories(
         ${includepath}
 )
-find_library( # Sets the name of the path variable.
+find_library(
         jnigraphics-lib
         jnigraphics)
+
+find_library(
+        opensles-lib
+        OpenSLES)
+
 find_library(
         log-lib
         log)
@@ -17,7 +22,7 @@ find_library(
 add_library(
         lfplayer
         SHARED
-        lfplayer.cpp main.cpp yuvplayer.cpp pcmplayer.cpp encodeH264.cpp)
+        lfplayer.cpp main.cpp yuvplayer.cpp pcmplayer.cpp encodeH264.cpp openslesplayer.cpp)
 add_library(
         hidapi
         SHARED
@@ -179,4 +184,5 @@ target_link_libraries(
         ${log-lib}
         ${android-lib}
         ${jnigraphics-lib}
+        ${opensles-lib}
 )
