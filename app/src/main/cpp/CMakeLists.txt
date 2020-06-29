@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.4.1)
 add_definitions(-Wno-format-security)
-set(libpath ${PROJECT_SOURCE_DIR}/jniLibs/${CMAKE_ANDROID_ARCH_ABI})
-set(includepath cpp/include)
+set(libpath ${PROJECT_SOURCE_DIR}/../jniLibs/${CMAKE_ANDROID_ARCH_ABI})
+set(includepath ./include)
 include_directories(
         ${includepath}
 )
@@ -17,7 +17,7 @@ find_library(
 add_library(
         lfplayer
         SHARED
-        cpp/lfplayer.cpp cpp/main.cpp cpp/yuvplayer.cpp cpp/pcmplayer.cpp cpp/encodeH264.cpp)
+        lfplayer.cpp main.cpp yuvplayer.cpp pcmplayer.cpp encodeH264.cpp)
 add_library(
         hidapi
         SHARED
