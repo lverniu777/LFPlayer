@@ -1,21 +1,20 @@
 package com.example.lfplayer;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import org.libsdl.app.SDLActivity;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import surfaceplayer.SurfacePlayerActivity;
 
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 10086;
@@ -36,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    @OnClick({R.id.encode_preview_h264, R.id.sdl_player, R.id.audio_record})
+    @OnClick({R.id.encode_preview_h264, R.id.sdl_player, R.id.audio_record, R.id.surface_player})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.encode_preview_h264:
@@ -47,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.audio_record:
                 startActivity(new Intent(this, AudioRecordActivity.class));
+                break;
+            case R.id.surface_player:
+                startActivity(new Intent(this, SurfacePlayerActivity.class));
                 break;
         }
     }

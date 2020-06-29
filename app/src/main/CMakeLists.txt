@@ -5,6 +5,9 @@ set(includepath cpp/include)
 include_directories(
         ${includepath}
 )
+find_library( # Sets the name of the path variable.
+        jnigraphics-lib
+        jnigraphics)
 find_library(
         log-lib
         log)
@@ -175,4 +178,5 @@ target_link_libraries(
         rtmp
         ${log-lib}
         ${android-lib}
+        ${jnigraphics-lib}
 )
