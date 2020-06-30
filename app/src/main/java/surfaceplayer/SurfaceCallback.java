@@ -3,6 +3,7 @@ package surfaceplayer;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 
 import com.example.lfplayer.R;
@@ -25,12 +26,12 @@ public class SurfaceCallback implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder) {
         mSurfaceHolder = holder;
         new Thread(() -> {
-            nativePlay("");
+            nativePlay("",holder.getSurface());
         }
         ).start();
     }
 
-    private native void nativePlay(String playPath);
+    private native void nativePlay(String playPath, Surface surface);
 
 
     @Override
