@@ -25,11 +25,12 @@ public class SurfaceCallback implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder) {
         mSurfaceHolder = holder;
         new Thread(() -> {
-            final Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),
-                    R.drawable.huoying);
+            nativePlay("");
         }
         ).start();
     }
+
+    private native void nativePlay(String playPath);
 
 
     @Override

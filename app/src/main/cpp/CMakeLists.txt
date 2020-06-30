@@ -22,7 +22,14 @@ find_library(
 add_library(
         lfplayer
         SHARED
-        lfplayer.cpp main.cpp yuvplayer.cpp pcmplayer.cpp encodeH264.cpp openslesplayer.cpp)
+        lfplayer.cpp
+        main.cpp
+        yuvplayer.cpp
+        pcmplayer.cpp
+        encodeH264.cpp
+        openslesplayer.cpp
+        anativewindowplayer.cpp
+)
 add_library(
         hidapi
         SHARED
