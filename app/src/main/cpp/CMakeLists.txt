@@ -30,6 +30,7 @@ add_library(
         openslesplayer.cpp
         anativewindowplayer.cpp
         audio_play.cpp
+        video_play.cpp
 )
 add_library(
         hidapi

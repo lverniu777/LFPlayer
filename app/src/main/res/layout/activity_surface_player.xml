@@ -4,17 +4,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="surfaceplayer.SurfacePlayerActivity">
+    tools:context=".SurfacePlayerActivity">
+
 
     <Button
         android:id="@+id/surface_play"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Play"
+        android:text="播放"
         app:layout_constraintBottom_toTopOf="@id/surface_view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0" />
+
+    <Button
+        android:id="@+id/select_video_file"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="选择视频文件"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/surface_play"
+        app:layout_constraintVertical_bias="0" />
+
+    <TextView
+        android:id="@+id/selected_file_path"
+        android:layout_width="0dp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:layout_height="wrap_content"
+        android:text="视频文件"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@id/surface_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/select_video_file"
+        app:layout_constraintVertical_bias="0" />
 
     <SurfaceView
         android:id="@+id/surface_view"
@@ -23,16 +50,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/surface_play" />
-
-    <View
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@android:color/holo_blue_bright"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/selected_file_path" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

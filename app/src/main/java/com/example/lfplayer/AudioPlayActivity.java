@@ -24,8 +24,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AudioPlayActivity extends AppCompatActivity {
-    private static final int CHOOSE_FILE_REQUEST_CODE = 6;
+public class AudioPlayActivity extends BaseSelectMediaFileActivity {
+
     private final Object mLock = new RuntimeException();
     private AudioTrack mAudioTrack;
     private HandlerThread mHandlerThread;
@@ -53,10 +53,7 @@ public class AudioPlayActivity extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.select_audio_file:
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");//无类型限制
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                startActivityForResult(intent, CHOOSE_FILE_REQUEST_CODE);
+                requestSelectFile();
                 break;
             case R.id.play_audio:
                 final String audioFilePath = mAudioFilePath.getText().toString();
@@ -68,24 +65,10 @@ public class AudioPlayActivity extends AppCompatActivity {
         }
     }
 
+
+
     private native void nativePlayAudio(String audioFilePath, AudioPlayActivity audioPlayActivity);
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode != CHOOSE_FILE_REQUEST_CODE) {
-            return;
-        }
-        if (resultCode != Activity.RESULT_OK) {
-            return;
-        }
-        if (data == null || data.getData() == null) {
-            Toast.makeText(this, "没有选中文件", Toast.LENGTH_LONG).show();
-        } else {
-            final String filePath = FileUtils.INSTANCE.getPath(this, data.getData());
-            mAudioFilePath.setText(filePath);
-        }
-    }
 
     private void audioPlay(byte[] audioData, int sampleRate, int channels) {
         if (mAudioTrack == null) {
@@ -114,6 +97,11 @@ public class AudioPlayActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onPathSelected(String path) {
+        mAudioFilePath.setText(path);
+    }
 
     @Override
     protected void onDestroy() {

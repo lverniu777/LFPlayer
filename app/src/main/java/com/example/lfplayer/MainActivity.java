@@ -14,7 +14,6 @@ import org.libsdl.app.SDLActivity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import surfaceplayer.SurfacePlayerActivity;
 
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 10086;
