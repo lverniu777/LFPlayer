@@ -25,6 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".EncodeH264Activity" />
+        <activity android:name=".AudioPlayActivity" />
         <activity android:name="org.libsdl.app.SDLActivity" />
     </application>
 

@@ -6,25 +6,35 @@
     android:layout_height="match_parent"
     tools:context=".AudioRecordActivity">
 
-    <TextView
-        android:id="@+id/audio_record_start"
+    <Button
+        android:id="@+id/select_audio_file"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="开始录音"
-        app:layout_constraintBottom_toTopOf="@id/audio_record_end"
+        android:text="选择音频文件"
+        app:layout_constraintBottom_toTopOf="@id/audio_file_path"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/audio_record_end"
+        android:id="@+id/audio_file_path"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="停止录音"
+        android:text="播放文件"
+        app:layout_constraintBottom_toTopOf="@id/play_audio"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/select_audio_file" />
+
+    <Button
+        android:id="@+id/play_audio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始播放"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/audio_record_start" />
+        app:layout_constraintTop_toBottomOf="@id/audio_file_path" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -29,6 +29,7 @@ add_library(
         encodeH264.cpp
         openslesplayer.cpp
         anativewindowplayer.cpp
+        audio_play.cpp
 )
 add_library(
         hidapi

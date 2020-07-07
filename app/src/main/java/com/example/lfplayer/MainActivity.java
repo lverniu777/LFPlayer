@@ -35,7 +35,9 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    @OnClick({R.id.encode_preview_h264, R.id.sdl_player, R.id.audio_record, R.id.surface_player})
+    @OnClick({R.id.encode_preview_h264, R.id.sdl_player,
+            R.id.audio_record, R.id.audio_play,
+            R.id.surface_player})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.encode_preview_h264:
@@ -46,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.audio_record:
                 startActivity(new Intent(this, AudioRecordActivity.class));
+                break;
+            case R.id.audio_play:
+                startActivity(new Intent(this, AudioPlayActivity.class));
                 break;
             case R.id.surface_player:
                 startActivity(new Intent(this, SurfacePlayerActivity.class));
