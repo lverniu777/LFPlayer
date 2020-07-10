@@ -2,6 +2,7 @@ package com.example.lfplayer;
 
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -19,14 +20,15 @@ public class SurfacePlayerActivity extends BaseSelectMediaFileActivity {
 
     @BindView(R.id.selected_file_path)
     TextView mVideoPath;
+    @BindView(R.id.surface_view)
+    SurfaceView mSurfaceView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_surface_player);
         ButterKnife.bind(this);
-        final SurfaceView surfaceView = findViewById(R.id.surface_view);
-        surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
+        mSurfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 holder.setFormat(PixelFormat.TRANSLUCENT);
@@ -42,15 +44,18 @@ public class SurfacePlayerActivity extends BaseSelectMediaFileActivity {
 
             }
         });
-
-        surfaceView.setZOrderOnTop(false);
+        mSurfaceView.setZOrderOnTop(false);
     }
 
-    @OnClick({R.id.surface_play,R.id.select_video_file})
+    @OnClick({R.id.surface_play, R.id.select_video_file})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.surface_play:
-                nativePlayVideo(mVideoPath.getText().toString());
+                new Thread(() ->
+                        nativePlayVideo(
+                                mVideoPath.getText().toString(),
+                                mSurfaceView.getHolder().getSurface()
+                        )).start();
                 break;
             case R.id.select_video_file:
                 requestSelectFile();
@@ -58,7 +63,7 @@ public class SurfacePlayerActivity extends BaseSelectMediaFileActivity {
         }
     }
 
-    private native void nativePlayVideo(String toString);
+    private native void nativePlayVideo(String toString, Surface surface);
 
 
     @Override
