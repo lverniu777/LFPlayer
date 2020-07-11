@@ -12,6 +12,8 @@ extern "C" {
 #include <libavutil/imgutils.h>
 #include <libswscale/swscale.h>
 }
+
+//TODO 需要根据AVSteram medata 中视频播放角度来进行画面的渲染
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_lfplayer_SurfacePlayerActivity_nativePlayVideo(JNIEnv *env, jobject thiz,
