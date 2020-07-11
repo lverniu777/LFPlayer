@@ -85,6 +85,7 @@ Java_com_example_lfplayer_SurfacePlayerActivity_nativePlayVideo(JNIEnv *env, job
         av_packet_unref(packet);
     }
 
+    av_packet_free(&packet);
     sws_freeContext(swsContext);
     ANativeWindow_release(nativeWindow);
     av_frame_free(&avFrame);
