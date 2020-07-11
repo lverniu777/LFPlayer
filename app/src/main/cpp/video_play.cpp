@@ -30,6 +30,8 @@ Java_com_example_lfplayer_SurfacePlayerActivity_nativePlayVideo(JNIEnv *env, job
         }
     }
     AVStream *videoStream = formatContext->streams[videoStreamIndex];
+    AVDictionaryEntry *dictionaryEntry = av_dict_get(videoStream->metadata, "rotate",
+                                                     nullptr, AV_DICT_MATCH_CASE);
     AVCodecParameters *videoParam = videoStream->codecpar;
     AVCodec *videoCodec = avcodec_find_decoder(videoParam->codec_id);
     AVCodecContext *codecContext = avcodec_alloc_context3(videoCodec);
@@ -72,8 +74,6 @@ Java_com_example_lfplayer_SurfacePlayerActivity_nativePlayVideo(JNIEnv *env, job
                                 avFrame->linesize, 0, avFrame->height, dstData,
                                 dstLineSize);
                 ANativeWindow_lock(nativeWindow, &nativeWindowBuffer, nullptr);
-                LOG("window buffer width:%d window buffer height:%d", nativeWindowBuffer.width,
-                    nativeWindowBuffer.height);
                 for (int i = 0; i < windowHeight; i++) {
                     memcpy((uint8_t *) nativeWindowBuffer.bits + nativeWindowBuffer.stride * 4 * i,
                            dstData[0] + dstLineSize[0] * i,
@@ -82,6 +82,7 @@ Java_com_example_lfplayer_SurfacePlayerActivity_nativePlayVideo(JNIEnv *env, job
                 ANativeWindow_unlockAndPost(nativeWindow);
             }
         }
+        av_packet_unref(packet);
     }
 
     sws_freeContext(swsContext);

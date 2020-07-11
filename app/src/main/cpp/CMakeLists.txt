@@ -175,6 +175,17 @@ set_target_properties(
         PROPERTIES IMPORTED_LOCATION
         ${libpath}/librtmp.so
 )
+
+add_library(
+        yuvlib
+        SHARED
+        IMPORTED
+)
+set_target_properties(
+        yuvlib
+        PROPERTIES IMPORTED_LOCATION
+        ${libpath}/libyuv.so
+)
 target_link_libraries(
         lfplayer
         hidapi
@@ -190,6 +201,7 @@ target_link_libraries(
         x264
         fdkaac
         rtmp
+        yuvlib
         ${log-lib}
         ${android-lib}
         ${jnigraphics-lib}
