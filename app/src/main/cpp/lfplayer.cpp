@@ -204,7 +204,7 @@ void startPlay(char *path) {
         LOG("audio avcodec_copy_context failed %s", av_err2str(ret));
         return;
     }
-    SDL_AudioSpec desiredAudioSpec, obtainedAudioSpec;
+/*    SDL_AudioSpec desiredAudioSpec, obtainedAudioSpec;
     desiredAudioSpec.freq = audioCodecContext->sample_rate;
     desiredAudioSpec.channels = audioCodecContext->channels;
     desiredAudioSpec.format = AUDIO_S16SYS;
@@ -238,7 +238,7 @@ void startPlay(char *path) {
                        0,
                        NULL);
     swr_init(audioConvertCtx);
-    SDL_PauseAudio(0);
+    SDL_PauseAudio(0);*/
     //原始视频流的编解码上下文
     AVCodecContext *originVideoCodecContext = avFormatContext->streams[videoStreamIndex]->codec;
     //解码器
@@ -323,7 +323,6 @@ void startPlay(char *path) {
                 sws_scale(swsContext, (uint8_t const *const *) avFrame->data,
                           avFrame->linesize, 0, videoHeight,
                           avPicture->data, avPicture->linesize);
-
                 SDL_UpdateYUVTexture(sdlTexture, NULL,
                                      avPicture->data[0], avPicture->linesize[0],
                                      avPicture->data[1], avPicture->linesize[1],
@@ -337,4 +336,7 @@ void startPlay(char *path) {
             av_packet_unref(&avPacket);
         }
     }
+    SDL_DestroyTexture(sdlTexture);
+    SDL_DestroyRenderer(sdlRenderer);
+    SDL_DestroyWindow(sdlWindow);
 }
