@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import org.libsdl.app.SDLActivity;
+import org.libsdl.app.SDLSelectMediaFileActivity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, EncodeH264Activity.class));
                 break;
             case R.id.sdl_player:
-                startActivity(new Intent(this, SDLActivity.class));
+                startActivity(new Intent(this, SDLSelectMediaFileActivity.class));
                 break;
             case R.id.audio_record:
                 startActivity(new Intent(this, AudioRecordActivity.class));
