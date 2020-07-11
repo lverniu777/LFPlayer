@@ -3,6 +3,9 @@
 //
 #include <player/lfplayer.h>
 
+extern "C" {
+#include <libyuv/rotate.h>
+}
 static PacketQueue audioq;
 static SwrContext *audioConvertCtx = NULL;
 static int64_t inChannelLayout;
@@ -158,7 +161,7 @@ void packet_queue_init(PacketQueue *q) {
     q->cond = SDL_CreateCond();
 }
 
-void startPlay(char *path) {
+void startPlay(char *path, int windowWidth, int windowHeight) {
     LOG("file path: %s", path);
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER)) {
         LOG("SDL_Init failed: %s", SDL_GetError());
@@ -192,6 +195,15 @@ void startPlay(char *path) {
     if (audioStreamIndex == -1) {
         LOG("no find audio stream");
         return;
+    }
+    AVStream *videoStream = avFormatContext->streams[videoStreamIndex];
+    AVDictionaryEntry *dictionaryEntry = av_dict_get(videoStream->metadata, "rotate",
+                                                     nullptr, AV_DICT_MATCH_CASE);
+    int rotate;
+    if (dictionaryEntry) {
+        rotate = atoi(dictionaryEntry->value);
+    } else {
+        rotate = 0;
     }
     AVCodecContext *originAudioCodecContext = avFormatContext->streams[audioStreamIndex]->codec;
     AVCodec *audioCodec = avcodec_find_decoder(originAudioCodecContext->codec_id);
@@ -260,8 +272,6 @@ void startPlay(char *path) {
     }
     const int videoWidth = videoCodecContext->width;
     const int videoHeight = videoCodecContext->height;
-    const int windowWidth = 1080;
-    const int windowHeight = 1920;
     //渲染窗口
     SDL_Window *sdlWindow = SDL_CreateWindow(TAG, 0, 0, windowWidth, windowHeight,
                                              SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
@@ -277,8 +287,8 @@ void startPlay(char *path) {
     }
     //渲染纹理
     SDL_Texture *sdlTexture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_IYUV,
-                                                SDL_TEXTUREACCESS_STREAMING, videoWidth,
-                                                videoHeight);
+                                                SDL_TEXTUREACCESS_STREAMING, windowWidth,
+                                                windowHeight);
     if (!sdlTexture) {
         LOG("SDL_CreateTexture failed %s", SDL_GetError());
         return;
@@ -287,20 +297,20 @@ void startPlay(char *path) {
     SwsContext *swsContext = sws_getContext(videoWidth,
                                             videoHeight,
                                             videoCodecContext->pix_fmt,
-                                            videoWidth,
-                                            videoHeight,
+                                            windowWidth,
+                                            windowHeight,
                                             AV_PIX_FMT_YUV420P,
                                             SWS_BILINEAR,
-                                            NULL,
-                                            NULL,
-                                            NULL
+                                            nullptr,
+                                            nullptr,
+                                            nullptr
     );
     //存放原始图像数据
     AVPicture *avPicture = (AVPicture *) (malloc(sizeof(AVPicture)));
     avpicture_alloc(avPicture,
                     AV_PIX_FMT_YUV420P,
-                    videoWidth,
-                    videoHeight);
+                    windowWidth,
+                    windowHeight);
     //解码前的数据包(可以包含一个或多个视频帧)
     AVPacket avPacket;
     av_init_packet(&avPacket);
@@ -318,8 +328,8 @@ void startPlay(char *path) {
                 // Set Size of Window
                 sdlRect.x = 0;
                 sdlRect.y = 0;
-                sdlRect.w = videoWidth;
-                sdlRect.h = videoHeight;
+                sdlRect.w = windowWidth;
+                sdlRect.h = windowHeight;
                 sws_scale(swsContext, (uint8_t const *const *) avFrame->data,
                           avFrame->linesize, 0, videoHeight,
                           avPicture->data, avPicture->linesize);
@@ -327,7 +337,8 @@ void startPlay(char *path) {
                                      avPicture->data[0], avPicture->linesize[0],
                                      avPicture->data[1], avPicture->linesize[1],
                                      avPicture->data[2], avPicture->linesize[2]);
-                SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, &sdlRect);
+                SDL_RenderCopyEx(sdlRenderer, sdlTexture, nullptr, &sdlRect, rotate, nullptr,
+                                 SDL_FLIP_NONE);
                 SDL_RenderPresent(sdlRenderer);
             }
         } else if (avPacket.stream_index == audioStreamIndex) {

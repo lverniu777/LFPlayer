@@ -7,7 +7,8 @@
 int main(int argc, char *argv[]) {
 //    playYUV(argv);
 //    playPCM(argv[2]);
-    startPlay(argv[1]);
+    LOG("arg1 %s arg2 %d arg3 %d ", argv[1], atoi(argv[2]), atoi(argv[3]));
+    startPlay(argv[1], atoi(argv[2]), atoi(argv[3]));
     return 0;
 }
 
