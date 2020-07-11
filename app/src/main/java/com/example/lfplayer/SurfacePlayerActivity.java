@@ -2,6 +2,7 @@ package com.example.lfplayer;
 
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -51,6 +52,10 @@ public class SurfacePlayerActivity extends BaseSelectMediaFileActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.surface_play:
+                final String playPath = mVideoPath.getText().toString();
+                if (TextUtils.isEmpty(playPath)) {
+                    return;
+                }
                 new Thread(() ->
                         nativePlayVideo(
                                 mVideoPath.getText().toString(),
