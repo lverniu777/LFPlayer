@@ -313,16 +313,15 @@ void startPlay(char *path, int windowWidth, int windowHeight) {
                     videoWidth,
                     videoHeight);
     //解码前的数据包(可以包含一个或多个视频帧)
-    AVPacket avPacket;
-    av_init_packet(&avPacket);
+    AVPacket *avPacket = av_packet_alloc();
     //解码后的数据帧
     AVFrame *avFrame = av_frame_alloc();
     //SDL渲染时使用的渲染区域
     SDL_Rect sdlRect;
-    while (av_read_frame(avFormatContext, &avPacket) >= 0) {
-        if (avPacket.stream_index == videoStreamIndex) {
+    while (av_read_frame(avFormatContext, avPacket) >= 0) {
+        if (avPacket->stream_index == videoStreamIndex) {
             //解码视频帧
-            avcodec_decode_video2(videoCodecContext, avFrame, &ret, &avPacket);
+            avcodec_decode_video2(videoCodecContext, avFrame, &ret, avPacket);
             if (ret) {
                 SDL_SetRenderDrawColor(sdlRenderer, 0, 0, 0, 255);
                 SDL_RenderClear(sdlRenderer);
@@ -355,12 +354,14 @@ void startPlay(char *path, int windowWidth, int windowHeight) {
                                  SDL_FLIP_NONE);
                 SDL_RenderPresent(sdlRenderer);
             }
-        } else if (avPacket.stream_index == audioStreamIndex) {
-            packet_queue_put(&audioq, &avPacket);
+        } else if (avPacket->stream_index == audioStreamIndex) {
+            packet_queue_put(&audioq, avPacket);
         } else {
-            av_packet_unref(&avPacket);
+            av_packet_unref(avPacket);
         }
     }
+    av_packet_free(&avPacket);
+    avformat_free_context(avFormatContext);
     SDL_DestroyTexture(sdlTexture);
     SDL_DestroyRenderer(sdlRenderer);
     SDL_DestroyWindow(sdlWindow);
