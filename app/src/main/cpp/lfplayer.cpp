@@ -162,7 +162,6 @@ void packet_queue_init(PacketQueue *q) {
 }
 
 void startPlay(char *path, int windowWidth, int windowHeight) {
-    LOG("file path: %s", path);
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER)) {
         LOG("SDL_Init failed: %s", SDL_GetError());
         return;
@@ -275,6 +274,8 @@ void startPlay(char *path, int windowWidth, int windowHeight) {
     //渲染窗口
     SDL_Window *sdlWindow = SDL_CreateWindow(TAG, 0, 0, windowWidth, windowHeight,
                                              SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    LOG("video width：%d video height: %d window width: %d window height: %d", videoWidth,
+        videoHeight, windowWidth, windowHeight);
     if (!sdlWindow) {
         LOG("SDL_CreateWindow failed %s", SDL_GetError());
         return;
@@ -287,30 +288,30 @@ void startPlay(char *path, int windowWidth, int windowHeight) {
     }
     //渲染纹理
     SDL_Texture *sdlTexture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_IYUV,
-                                                SDL_TEXTUREACCESS_STREAMING, windowWidth,
-                                                windowHeight);
+                                                SDL_TEXTUREACCESS_STREAMING, videoWidth,
+                                                videoHeight);
     if (!sdlTexture) {
         LOG("SDL_CreateTexture failed %s", SDL_GetError());
         return;
     }
-    //图像裁剪上下文
-    SwsContext *swsContext = sws_getContext(videoWidth,
-                                            videoHeight,
-                                            videoCodecContext->pix_fmt,
-                                            windowWidth,
-                                            windowHeight,
-                                            AV_PIX_FMT_YUV420P,
-                                            SWS_BILINEAR,
-                                            nullptr,
-                                            nullptr,
-                                            nullptr
+    SwsContext *swsContext = nullptr;
+    swsContext = sws_getContext(videoWidth,
+                                videoHeight,
+                                videoCodecContext->pix_fmt,
+                                videoWidth,
+                                videoHeight,
+                                AV_PIX_FMT_YUV420P,
+                                SWS_BILINEAR,
+                                nullptr,
+                                nullptr,
+                                nullptr
     );
     //存放原始图像数据
     AVPicture *avPicture = (AVPicture *) (malloc(sizeof(AVPicture)));
     avpicture_alloc(avPicture,
                     AV_PIX_FMT_YUV420P,
-                    windowWidth,
-                    windowHeight);
+                    videoWidth,
+                    videoHeight);
     //解码前的数据包(可以包含一个或多个视频帧)
     AVPacket avPacket;
     av_init_packet(&avPacket);
@@ -325,15 +326,28 @@ void startPlay(char *path, int windowWidth, int windowHeight) {
             if (ret) {
                 SDL_SetRenderDrawColor(sdlRenderer, 0, 0, 0, 255);
                 SDL_RenderClear(sdlRenderer);
-                // Set Size of Window
-                sdlRect.x = 0;
-                sdlRect.y = 0;
-                sdlRect.w = windowWidth;
-                sdlRect.h = windowHeight;
                 sws_scale(swsContext, (uint8_t const *const *) avFrame->data,
                           avFrame->linesize, 0, videoHeight,
                           avPicture->data, avPicture->linesize);
-                SDL_UpdateYUVTexture(sdlTexture, NULL,
+                //根据旋转角度计算窗口坐标
+                int x = 0, y;
+                switch (rotate) {
+                    case 90:
+                        x = -(videoWidth - windowWidth) / 2;
+                        y = (windowHeight - videoHeight) / 2;;
+                        break;
+                    case 0:
+                        x = 0;
+                        y = 0;
+                        break;
+                }
+                // Set Size of Window
+                sdlRect.x = x;
+                sdlRect.y = y;
+                sdlRect.w = videoWidth;
+                sdlRect.h = videoHeight;
+
+                SDL_UpdateYUVTexture(sdlTexture, nullptr,
                                      avPicture->data[0], avPicture->linesize[0],
                                      avPicture->data[1], avPicture->linesize[1],
                                      avPicture->data[2], avPicture->linesize[2]);
