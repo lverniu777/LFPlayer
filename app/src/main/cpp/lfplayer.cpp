@@ -74,7 +74,7 @@ void startPlay(char *path, int windowWidth, int windowHeight) {
         return;
     }
     //SDL渲染器
-    SDL_Renderer *sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, 0);
+    SDL_Renderer *sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, SDL_RENDERER_ACCELERATED);
     if (!sdlRenderer) {
         LOG("SDL_CreateRenderer failed %s", SDL_GetError());
         return;
