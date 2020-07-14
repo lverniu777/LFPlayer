@@ -8,7 +8,7 @@ extern "C" {
 #include <libavutil/imgutils.h>
 }
 
-void startPlay(char *path, int windowWidth, int windowHeight) {
+void startPlay(char *path, const int windowWidth, const int windowHeight) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER)) {
         LOG("SDL_Init failed: %s", SDL_GetError());
         return;
@@ -67,7 +67,7 @@ void startPlay(char *path, int windowWidth, int windowHeight) {
     //渲染窗口
     SDL_Window *sdlWindow = SDL_CreateWindow(TAG, 0, 0, windowWidth, windowHeight,
                                              SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-    LOG("video width：%d video height: %d window width: %d window height: %d", videoWidth,
+    LOG("video width：%d video height: %d window width: %d window height: %d ", videoWidth,
         videoHeight, windowWidth, windowHeight);
     if (!sdlWindow) {
         LOG("SDL_CreateWindow failed %s", SDL_GetError());
@@ -118,23 +118,12 @@ void startPlay(char *path, int windowWidth, int windowHeight) {
                     sws_scale(swsContext, (uint8_t const *const *) avFrame->data,
                               avFrame->linesize, 0, videoHeight,
                               pictureData, pictureLineSize);
-                    //根据旋转角度计算窗口坐标
-                    int x = 0, y;
-                    switch (rotate) {
-                        case 90:
-                            x = -(videoWidth - windowWidth) / 2;
-                            y = (windowHeight - videoHeight) / 2;;
-                            break;
-                        default:
-                        case 0:
-                            x = 0;
-                            y = 0;
-                            break;
-                    }
-                    sdlRect.x = x;
-                    sdlRect.y = y;
+
+                    sdlRect.x = (windowWidth - videoWidth) / 2;
+                    sdlRect.y = (windowHeight - videoHeight) / 2;
                     sdlRect.w = videoWidth;
                     sdlRect.h = videoHeight;
+                    LOG("sdlRect h: %d", sdlRect.h);
 
                     SDL_UpdateYUVTexture(sdlTexture, nullptr,
                                          pictureData[0], pictureLineSize[0],
