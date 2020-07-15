@@ -23,7 +23,7 @@ typedef struct PacketQueue {
     SDL_cond *cond;
 } PacketQueue;
 
-void startPlay(char *, int, int);
+void startPlay(char *);
 
 
 #endif //LFPLAYER_LFPLAYER_H

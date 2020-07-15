@@ -8,7 +8,7 @@ extern "C" {
 #include <libavutil/imgutils.h>
 }
 
-void startPlay(char *path, const int windowWidth, const int windowHeight) {
+void startPlay(char *path) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER)) {
         LOG("SDL_Init failed: %s", SDL_GetError());
         return;
@@ -38,11 +38,11 @@ void startPlay(char *path, const int windowWidth, const int windowHeight) {
     AVStream *videoStream = avFormatContext->streams[videoStreamIndex];
     AVDictionaryEntry *dictionaryEntry = av_dict_get(videoStream->metadata, "rotate",
                                                      nullptr, AV_DICT_MATCH_CASE);
-    int rotate;
+    int rotation;
     if (dictionaryEntry) {
-        rotate = atoi(dictionaryEntry->value);
+        rotation = atoi(dictionaryEntry->value);
     } else {
-        rotate = 0;
+        rotation = 0;
     }
     //原始视频流的编解码上下文
     AVCodecParameters *videoCodecParameters = avFormatContext->streams[videoStreamIndex]->codecpar;
@@ -65,10 +65,15 @@ void startPlay(char *path, const int windowWidth, const int windowHeight) {
     const int videoWidth = videoCodecContext->width;
     const int videoHeight = videoCodecContext->height;
     //渲染窗口
-    SDL_Window *sdlWindow = SDL_CreateWindow(TAG, 0, 0, windowWidth, windowHeight,
-                                             SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    SDL_Window *sdlWindow = SDL_CreateWindow(
+            TAG, 0, 0,
+            0, 0,
+            SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN
+    );
+    int w, h;
+    SDL_GetWindowSize(sdlWindow, &w, &h);
     LOG("video width：%d video height: %d window width: %d window height: %d ", videoWidth,
-        videoHeight, windowWidth, windowHeight);
+        videoHeight, w, h);
     if (!sdlWindow) {
         LOG("SDL_CreateWindow failed %s", SDL_GetError());
         return;
@@ -118,18 +123,15 @@ void startPlay(char *path, const int windowWidth, const int windowHeight) {
                     sws_scale(swsContext, (uint8_t const *const *) avFrame->data,
                               avFrame->linesize, 0, videoHeight,
                               pictureData, pictureLineSize);
-
-                    sdlRect.x = (windowWidth - videoWidth) / 2;
-                    sdlRect.y = (windowHeight - videoHeight) / 2;
+                    sdlRect.x = (w - videoWidth) / 2;
+                    sdlRect.y = (h - videoHeight) / 2;
                     sdlRect.w = videoWidth;
                     sdlRect.h = videoHeight;
-                    LOG("sdlRect h: %d", sdlRect.h);
-
                     SDL_UpdateYUVTexture(sdlTexture, nullptr,
                                          pictureData[0], pictureLineSize[0],
                                          pictureData[1], pictureLineSize[1],
                                          pictureData[2], pictureLineSize[2]);
-                    SDL_RenderCopyEx(sdlRenderer, sdlTexture, nullptr, &sdlRect, rotate, nullptr,
+                    SDL_RenderCopyEx(sdlRenderer, sdlTexture, nullptr, &sdlRect, rotation, nullptr,
                                      SDL_FLIP_NONE);
                     SDL_RenderPresent(sdlRenderer);
                 }

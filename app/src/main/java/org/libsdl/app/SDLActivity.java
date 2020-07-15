@@ -175,12 +175,8 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
      * @return arguments for the native application.
      */
     protected String[] getArguments() {
-        final Point windowPoint = new Point();
-        getWindowManager().getDefaultDisplay().getRealSize(windowPoint);
         return new String[]{
-                getIntent().getStringExtra("path"),
-                getIntent().getIntExtra("width", windowPoint.x) + "",
-                getIntent().getIntExtra("height", windowPoint.y) + ""
+                getIntent().getStringExtra("path")
         };
     }
 

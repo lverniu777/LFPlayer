@@ -18,11 +18,7 @@ int main(int argc, char *argv[]) {
 //    playYUV(argv);
 //    playPCM(argv[2]);
     LOG("arg1 %s arg2 %s arg3 %s ", argv[1], argv[2], argv[3]);
-    startPlay(
-            argv[1],
-            CharToInt(argv[2], strlen(argv[2])),
-            CharToInt(argv[3], strlen(argv[3]))
-    );
+    startPlay(argv[1]);
     return 0;
 }
 
