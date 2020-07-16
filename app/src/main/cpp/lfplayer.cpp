@@ -140,6 +140,20 @@ void startPlay(char *path) {
             av_packet_unref(avPacket);
         }
     }
+    SDL_Event sdlEvent;
+    int quit = 0;
+    do {
+        SDL_WaitEvent(&sdlEvent);
+        switch (sdlEvent.key.keysym.scancode) {
+            default:
+                continue;
+            case SDL_SCANCODE_AC_BACK:
+                quit = 1;
+                break;
+        }
+    } while (!quit);
+
+
     av_freep(pictureData);
     av_packet_free(&avPacket);
     avformat_free_context(avFormatContext);

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
+    <Button
         android:id="@+id/encode_preview_h264"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="spread" />
 
-    <TextView
+    <Button
         android:id="@+id/audio_record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
