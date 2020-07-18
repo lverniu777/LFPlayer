@@ -52,6 +52,9 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.Hashtable;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * SDL Activity
  */
@@ -99,6 +102,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
 
     // Main components
     protected static SDLActivity mSingleton;
+
     protected static SDLSurface mSurface;
     protected static View mTextEdit;
     protected static boolean mScreenKeyboardShown;
@@ -285,6 +289,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         mHIDDeviceManager = HIDDeviceManager.acquire(this);
 
         setContentView(R.layout.activity_sdl_player);
+        ButterKnife.bind(this);
         // Set up the surface
         mSurface = findViewById(R.id.sdl_surface);
         mLayout = findViewById(R.id.sdl_root_view);
@@ -306,6 +311,16 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
                 Log.v(TAG, "Got filename: " + filename);
                 SDLActivity.onNativeDropFile(filename);
             }
+        }
+    }
+
+    @OnClick({R.id.sdl_resume, R.id.sdl_pause})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.sdl_resume:
+                break;
+            case R.id.sdl_pause:
+                break;
         }
     }
 
