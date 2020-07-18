@@ -1,40 +1,56 @@
 package org.libsdl.app;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Hashtable;
-import java.lang.reflect.Method;
-import java.lang.Math;
-
 import android.Manifest;
-import android.app.*;
-import android.content.*;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.UiModeManager;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.text.InputType;
-import android.view.*;
-import android.view.inputmethod.BaseInputConnection;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.RelativeLayout;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.os.*;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
-import android.graphics.*;
-import android.graphics.drawable.Drawable;
-import android.hardware.*;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ApplicationInfo;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.InputDevice;
+import android.view.KeyEvent;
+import android.view.PointerIcon;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.core.app.ActivityCompat;
 
-import com.example.lfplayer.utils.FileUtils;
+import com.example.lfplayer.R;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.util.Hashtable;
 
 /**
  * SDL Activity
@@ -268,18 +284,15 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
 
         mHIDDeviceManager = HIDDeviceManager.acquire(this);
 
+        setContentView(R.layout.activity_sdl_player);
         // Set up the surface
-        mSurface = new SDLSurface(getApplication());
-
-        mLayout = new RelativeLayout(this);
-        mLayout.addView(mSurface);
+        mSurface = findViewById(R.id.sdl_surface);
+        mLayout = findViewById(R.id.sdl_root_view);
 
         // Get our current screen orientation and pass it down.
         mCurrentOrientation = SDLActivity.getCurrentOrientation();
         // Only record current orientation
         SDLActivity.onNativeOrientationChanged(mCurrentOrientation);
-
-        setContentView(mLayout);
 
         setWindowStyle(false);
 

@@ -8,6 +8,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
+import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -26,7 +27,7 @@ import android.view.WindowManager;
  * <p>
  * Because of this, that's where we set up the SDL thread
  */
-class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
+public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         View.OnKeyListener, View.OnTouchListener, SensorEventListener {
 
     // Sensors
@@ -39,9 +40,13 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     // Is SurfaceView ready for rendering
     public boolean mIsSurfaceReady;
 
-    // Startup
     public SDLSurface(Context context) {
-        super(context);
+        this(context,null);
+    }
+
+    // Startup
+    public SDLSurface(Context context, AttributeSet attrs) {
+        super(context,attrs);
         getHolder().addCallback(this);
 
         setFocusable(true);

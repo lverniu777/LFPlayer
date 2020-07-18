@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sdl_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <org.libsdl.app.SDLSurface
+        android:id="@+id/sdl_surface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
