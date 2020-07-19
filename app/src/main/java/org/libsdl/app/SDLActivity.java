@@ -314,12 +314,17 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         }
     }
 
-    @OnClick({R.id.sdl_resume, R.id.sdl_pause})
+    @OnClick({R.id.sdl_resume, R.id.sdl_pause, R.id.sdl_finish})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.sdl_resume:
+                nativePlayerEvent(PlayerEvent.RESUME);
                 break;
             case R.id.sdl_pause:
+                nativePlayerEvent(PlayerEvent.PAUSE);
+                break;
+            case R.id.sdl_finish:
+                nativePlayerEvent(PlayerEvent.FINISH);
                 break;
         }
     }
@@ -856,6 +861,8 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
     public static native void nativeAddTouch(int touchId, String name);
 
     public static native void nativePermissionResult(int requestCode, boolean result);
+
+    private native void nativePlayerEvent(int eventType);
 
     /**
      * This method is called by SDL using JNI.
@@ -1708,6 +1715,12 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
     }
 }
 
+interface PlayerEvent {
+    int RESUME = 1;
+    int PAUSE = 2;
+    int FINISH = 3;
+}
+
 /**
  * Simple runnable to start the SDL application
  */
@@ -1752,44 +1765,4 @@ interface SDLClipboardHandler {
 
 }
 
-
-class SDLClipboardHandler_API11 implements
-        SDLClipboardHandler,
-        ClipboardManager.OnPrimaryClipChangedListener {
-
-    protected ClipboardManager mClipMgr;
-
-    SDLClipboardHandler_API11() {
-        mClipMgr = (ClipboardManager) SDL.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-        mClipMgr.addPrimaryClipChangedListener(this);
-    }
-
-    @Override
-    public boolean clipboardHasText() {
-        return mClipMgr.hasText();
-    }
-
-    @Override
-    public String clipboardGetText() {
-        CharSequence text;
-        text = mClipMgr.getText();
-        if (text != null) {
-            return text.toString();
-        }
-        return null;
-    }
-
-    @Override
-    public void clipboardSetText(String string) {
-        mClipMgr.removePrimaryClipChangedListener(this);
-        mClipMgr.setText(string);
-        mClipMgr.addPrimaryClipChangedListener(this);
-    }
-
-    @Override
-    public void onPrimaryClipChanged() {
-        SDLActivity.onNativeClipboardChanged();
-    }
-
-}
 
