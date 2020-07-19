@@ -285,91 +285,91 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     // Touch events
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-//        /* Ref: http://developer.android.com/training/gestures/multi.html */
-//        final int touchDevId = event.getDeviceId();
-//        final int pointerCount = event.getPointerCount();
-//        int action = event.getActionMasked();
-//        int pointerFingerId;
-//        int mouseButton;
-//        int i = -1;
-//        float x, y, p;
-//
-//        // 12290 = Samsung DeX mode desktop mouse
-//        // 12290 = 0x3002 = 0x2002 | 0x1002 = SOURCE_MOUSE | SOURCE_TOUCHSCREEN
-//        // 0x2   = SOURCE_CLASS_POINTER
-//        if (event.getSource() == InputDevice.SOURCE_MOUSE || event.getSource() == (InputDevice.SOURCE_MOUSE | InputDevice.SOURCE_TOUCHSCREEN)) {
-//            try {
-//                mouseButton = (Integer) event.getClass().getMethod("getButtonState").invoke(event);
-//            } catch (Exception e) {
-//                mouseButton = 1;    // oh well.
-//            }
-//
-//            // We need to check if we're in relative mouse mode and get the axis offset rather than the x/y values
-//            // if we are.  We'll leverage our existing mouse motion listener
-//            SDLGenericMotionListener_API12 motionListener = SDLActivity.getMotionListener();
-//            x = motionListener.getEventX(event);
-//            y = motionListener.getEventY(event);
-//
-//            SDLActivity.onNativeMouse(mouseButton, action, x, y, motionListener.inRelativeMode());
-//        } else {
-//            switch (action) {
-//                case MotionEvent.ACTION_MOVE:
-//                    for (i = 0; i < pointerCount; i++) {
-//                        pointerFingerId = event.getPointerId(i);
-//                        x = event.getX(i) / mWidth;
-//                        y = event.getY(i) / mHeight;
-//                        p = event.getPressure(i);
-//                        if (p > 1.0f) {
-//                            // may be larger than 1.0f on some devices
-//                            // see the documentation of getPressure(i)
-//                            p = 1.0f;
-//                        }
-//                        SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action, x, y, p);
-//                    }
-//                    break;
-//
-//                case MotionEvent.ACTION_UP:
-//                case MotionEvent.ACTION_DOWN:
-//                    // Primary pointer up/down, the index is always zero
-//                    i = 0;
-//                case MotionEvent.ACTION_POINTER_UP:
-//                case MotionEvent.ACTION_POINTER_DOWN:
-//                    // Non primary pointer up/down
-//                    if (i == -1) {
-//                        i = event.getActionIndex();
-//                    }
-//
-//                    pointerFingerId = event.getPointerId(i);
-//                    x = event.getX(i) / mWidth;
-//                    y = event.getY(i) / mHeight;
-//                    p = event.getPressure(i);
-//                    if (p > 1.0f) {
-//                        // may be larger than 1.0f on some devices
-//                        // see the documentation of getPressure(i)
-//                        p = 1.0f;
-//                    }
-//                    SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action, x, y, p);
-//                    break;
-//
-//                case MotionEvent.ACTION_CANCEL:
-//                    for (i = 0; i < pointerCount; i++) {
-//                        pointerFingerId = event.getPointerId(i);
-//                        x = event.getX(i) / mWidth;
-//                        y = event.getY(i) / mHeight;
-//                        p = event.getPressure(i);
-//                        if (p > 1.0f) {
-//                            // may be larger than 1.0f on some devices
-//                            // see the documentation of getPressure(i)
-//                            p = 1.0f;
-//                        }
-//                        SDLActivity.onNativeTouch(touchDevId, pointerFingerId, MotionEvent.ACTION_UP, x, y, p);
-//                    }
-//                    break;
-//
-//                default:
-//                    break;
-//            }
-//        }
+        /* Ref: http://developer.android.com/training/gestures/multi.html */
+        final int touchDevId = event.getDeviceId();
+        final int pointerCount = event.getPointerCount();
+        int action = event.getActionMasked();
+        int pointerFingerId;
+        int mouseButton;
+        int i = -1;
+        float x, y, p;
+
+        // 12290 = Samsung DeX mode desktop mouse
+        // 12290 = 0x3002 = 0x2002 | 0x1002 = SOURCE_MOUSE | SOURCE_TOUCHSCREEN
+        // 0x2   = SOURCE_CLASS_POINTER
+        if (event.getSource() == InputDevice.SOURCE_MOUSE || event.getSource() == (InputDevice.SOURCE_MOUSE | InputDevice.SOURCE_TOUCHSCREEN)) {
+            try {
+                mouseButton = (Integer) event.getClass().getMethod("getButtonState").invoke(event);
+            } catch (Exception e) {
+                mouseButton = 1;    // oh well.
+            }
+
+            // We need to check if we're in relative mouse mode and get the axis offset rather than the x/y values
+            // if we are.  We'll leverage our existing mouse motion listener
+            SDLGenericMotionListener_API12 motionListener = SDLActivity.getMotionListener();
+            x = motionListener.getEventX(event);
+            y = motionListener.getEventY(event);
+
+            SDLActivity.onNativeMouse(mouseButton, action, x, y, motionListener.inRelativeMode());
+        } else {
+            switch (action) {
+                case MotionEvent.ACTION_MOVE:
+                    for (i = 0; i < pointerCount; i++) {
+                        pointerFingerId = event.getPointerId(i);
+                        x = event.getX(i) / mWidth;
+                        y = event.getY(i) / mHeight;
+                        p = event.getPressure(i);
+                        if (p > 1.0f) {
+                            // may be larger than 1.0f on some devices
+                            // see the documentation of getPressure(i)
+                            p = 1.0f;
+                        }
+                        SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action, x, y, p);
+                    }
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_DOWN:
+                    // Primary pointer up/down, the index is always zero
+                    i = 0;
+                case MotionEvent.ACTION_POINTER_UP:
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    // Non primary pointer up/down
+                    if (i == -1) {
+                        i = event.getActionIndex();
+                    }
+
+                    pointerFingerId = event.getPointerId(i);
+                    x = event.getX(i) / mWidth;
+                    y = event.getY(i) / mHeight;
+                    p = event.getPressure(i);
+                    if (p > 1.0f) {
+                        // may be larger than 1.0f on some devices
+                        // see the documentation of getPressure(i)
+                        p = 1.0f;
+                    }
+                    SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action, x, y, p);
+                    break;
+
+                case MotionEvent.ACTION_CANCEL:
+                    for (i = 0; i < pointerCount; i++) {
+                        pointerFingerId = event.getPointerId(i);
+                        x = event.getX(i) / mWidth;
+                        y = event.getY(i) / mHeight;
+                        p = event.getPressure(i);
+                        if (p > 1.0f) {
+                            // may be larger than 1.0f on some devices
+                            // see the documentation of getPressure(i)
+                            p = 1.0f;
+                        }
+                        SDLActivity.onNativeTouch(touchDevId, pointerFingerId, MotionEvent.ACTION_UP, x, y, p);
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
         return false;
     }
 
