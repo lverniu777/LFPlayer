@@ -235,6 +235,8 @@ void startPlay(char *path) {
                 SDL_CondBroadcast(videoBufferCond);
                 SDL_UnlockMutex(videoBufferMutex);
                 break;
+                //FIXME 暂时使用KEYUP事件代替返回按键
+            case SDL_KEYUP:
             case FINISH:
                 playState = FINISH;
                 goto exit;
