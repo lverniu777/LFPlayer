@@ -57,7 +57,10 @@ import butterknife.OnClick;
 
 /**
  * SDL Activity
+ * SDL 引擎占用内存，仅仅使用其开发播放器有些大材小用，需要定制化开发。
+ * 做播放器不如使用OpenGL ES 自己进行渲染
  */
+@Deprecated
 public class SDLActivity extends Activity implements View.OnSystemUiVisibilityChangeListener {
     private static final String TAG = "SDL";
     private static final int PERMISSION_REQUEST_CODE = 10086;
