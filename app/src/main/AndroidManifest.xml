@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="org.libsdl.app.SDLSelectMediaFileActivity"></activity>
+        <activity android:name=".NativeOpenGLActivity"></activity>
+        <activity android:name="org.libsdl.app.SDLSelectMediaFileActivity" />
         <activity android:name=".SurfacePlayerActivity" />
         <activity android:name=".AudioRecordActivity" />
         <activity android:name=".MainActivity">

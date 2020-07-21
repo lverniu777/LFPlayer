@@ -8,6 +8,9 @@ include_directories(
 find_library(
         jnigraphics-lib
         jnigraphics)
+find_library(
+        jnigraphics-lib
+        jnigraphics)
 
 find_library(
         opensles-lib
@@ -31,6 +34,7 @@ add_library(
         anativewindowplayer.cpp
         audio_play.cpp
         video_play.cpp
+        openglplayer.cpp
 )
 add_library(
         hidapi
@@ -202,6 +206,8 @@ target_link_libraries(
         fdkaac
         rtmp
         yuvlib
+        EGL
+        GLESv2
         ${log-lib}
         ${android-lib}
         ${jnigraphics-lib}
