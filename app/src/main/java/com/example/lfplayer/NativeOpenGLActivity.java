@@ -1,14 +1,26 @@
 package com.example.lfplayer;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
+import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
+import android.opengl.GLUtils;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.TextureView;
 
 public class NativeOpenGLActivity extends AppCompatActivity {
+
+    final HandlerThread mHandlerThread = new HandlerThread("GL Thread");
 
     static {
         System.loadLibrary("lfplayer");
@@ -18,27 +30,6 @@ public class NativeOpenGLActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_native_open_gl);
-        final SurfaceView surfaceView = findViewById(R.id.opengl_surface);
-        surfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                new Thread(() -> {
-                    nativeSurfaceCreated(holder.getSurface());
-                }).start();
-            }
-
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-            }
-
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-
-            }
-        });
+        mHandlerThread.start();
     }
-
-    private native void nativeSurfaceCreated(Surface surface);
 }

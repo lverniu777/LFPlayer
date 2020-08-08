@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".NativeOpenGLActivity">
 
-    <SurfaceView
-        android:id="@+id/opengl_surface"
+    <TextureView
+        android:id="@+id/texture_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"

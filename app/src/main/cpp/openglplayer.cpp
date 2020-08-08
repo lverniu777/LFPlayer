@@ -12,22 +12,43 @@
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
 #include <cstdlib>
+#include <android/bitmap.h>
 
+typedef GLfloat pDouble[8];
 const char *gVertexShader =
-        "attribute vec4 vPosition;\n"
+        "attribute vec4 position;\n"
+        "attribute vec2 texcoord;\n"
+        "varying vec2 v_texcoord;\n"
+        "\n"
         "void main() {\n"
-        "  gl_Position = vPosition;\n"
-        "}\n";
+        "    gl_Position = position;\n"
+        "    v_texcoord = texcoord;\n"
+        "}";
 
 const char *gFragmentShader =
-        "precision mediump float;\n"
+        "precision highp float;\n"
+        "varying highp vec2 v_texcoord;\n"
+        "uniform sampler2D texSampler;\n"
         "void main() {\n"
-        "  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
-        "}\n";
+        "    gl_FragColor = texture2D(texSampler, v_texcoord);\n"
+        "}";
 
 EGLContext eglContext;
 EGLSurface eglSurface;
 
+const GLfloat vertex[] = {
+        -1.0, -1.0,
+        1.0, -1.0,
+        -1.0, 0.0,
+        1.0, 0.0
+};
+
+const GLfloat textureCoordinate[] = {
+        0.0, 0.0,
+        1.0, 0.0,
+        0.0, 1.0,
+        1.0, 1.0
+};
 const GLfloat gTriangleVertices[] = {
         0.0f, 0.5f,
         -0.5f, -0.5f,
@@ -35,6 +56,8 @@ const GLfloat gTriangleVertices[] = {
 };
 GLuint gProgram;
 GLint gvPositionHandle;
+
+void drawTriangle();
 
 GLuint loadShader(GLenum shaderType, const char *pSource) {
     GLuint shader = glCreateShader(shaderType);
@@ -98,6 +121,23 @@ GLuint createProgram(const char *pVertexSource, const char *pFragmentSource) {
     return program;
 }
 
+
+void drawTriangle() {
+    static float grey;
+    grey += 0.01f;
+    if (grey > 1.0f) {
+        grey = 0.0f;
+    }
+    glClearColor(grey, grey, grey, 1.0f);
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+    glUseProgram(gProgram);
+
+    glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, gTriangleVertices);
+    glEnableVertexAttribArray(gvPositionHandle);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+}
+
 void init(JNIEnv *env, jobject javeSurface) {
     EGLDisplay eglDisplay;
     if ((eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY)) == EGL_NO_DISPLAY) {
@@ -148,32 +188,24 @@ void init(JNIEnv *env, jobject javeSurface) {
     LOG("native egl init complete");
     gProgram = createProgram(gVertexShader, gFragmentShader);
     if (!gProgram) {
-        LOG("Could not create program.");
+        LOG("Could not create program");
         return;
     }
-    gvPositionHandle = glGetAttribLocation(gProgram, "vPosition");
-    LOG("glGetAttribLocation(\"vPosition\") = %d\n",
-        gvPositionHandle);
     int viewPortWidth = ANativeWindow_getWidth(nativeWindow);
     int viewPortHeight = ANativeWindow_getHeight(nativeWindow);
     glViewport(0, 0, viewPortWidth, viewPortHeight);
-    LOG("OpenGL init complete");
-    while (true) {
-        static float grey;
-        grey += 0.01f;
-        if (grey > 1.0f) {
-            grey = 0.0f;
-        }
-        glClearColor(grey, grey, grey, 1.0f);
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(gProgram);
+    glUseProgram(gProgram);
+    glClearColor(1.0, 0.0, 0.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+    GLint position = glGetAttribLocation(gProgram, "position");
+    glVertexAttribPointer(position, 2, GL_FLOAT, 0, 0, vertex);
+    glEnableVertexAttribArray(position);
+    GLint textPosition = glGetAttribLocation(gProgram, "texcoord");
+    glVertexAttribPointer(textPosition, 2, GL_FLOAT, 0, 0, textureCoordinate);
+    glEnableVertexAttribArray(textPosition);
+    GLint textureUniform = glGetUniformLocation(gProgram, "texSampler");
 
-        glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, gTriangleVertices);
-        glEnableVertexAttribArray(gvPositionHandle);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        eglSwapBuffers(eglDisplay,eglSurface);
-    }
 }
 
 
